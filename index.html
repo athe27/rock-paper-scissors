@@ -10,8 +10,11 @@
     <button data-selection="rock">Rock</button>
     <button data-selection="paper">Paper</button>
     <button data-selection="scissors">Scissors</button>
-    <div></div>
+    <span id="score">Score: 0 (You) - 0 (Computer) </span>
+    <div id="result"></div>
     <script>
+        let playerScore = 0
+        let computerScore = 0
         const choices = ["rock", "paper", "scissors"]
         const gameKey = {
             "rock" : "scissors",
@@ -28,8 +31,10 @@
             if (playerSelection === computerSelection) {
                 return "You drew! " + capitalize(playerSelection) + " draws " + capitalize(computerSelection)
             } else if (gameKey[playerSelection] === computerSelection) {
+                playerScore++
                 return "You won! " + capitalize(playerSelection) + " beats " + capitalize(computerSelection)
             } else if (playerSelection in gameKey) {
+                computerScore++
                 return "You lost! " + capitalize(computerSelection) + " beats " + capitalize(playerSelection)
             } else {
                 return "You lost! " + capitalize(playerSelection) + " is not a valid move!"
@@ -40,14 +45,39 @@
             return str.charAt(0).toUpperCase() + str.slice(1)
         }
 
+        function onClick() {
+            const playerSelection = this.getAttribute('data-selection')
+            const computerSelection = getComputerChoice()
+
+            const result = document.querySelector("#result")
+            let node = document.createElement("div")
+            node.innerHTML = playRound(playerSelection, computerSelection)
+            result.appendChild(node)
+
+            const score = document.querySelector("#score")
+            score.innerHTML = `Score: ${playerScore} (You) - ${computerScore} (Computer)`
+
+            if (playerScore == 5 || computerScore == 5) {
+                let node = document.createElement("div")
+                if (playerScore == 5) {
+                    node.innerHTML = "You won! Congrats!"
+                } else {
+                    node.innerHTML = "You lost! Better luck next time!"
+                }
+                result.appendChild(node)
+
+                buttons.forEach(button => {
+                    button.removeEventListener("click", onClick)
+                })
+            }
+        }
+
+        function setupButton(button) {
+            button.addEventListener("click", onClick)
+        }
+
         const buttons = document.querySelectorAll(`button[data-selection]`)
-        buttons.forEach(button => {
-            button.addEventListener("click", function() {
-                const playerSelection = this.getAttribute('data-selection')
-                const computerSelection = getComputerChoice()
-                console.log(playRound(playerSelection, computerSelection))
-            })
-        })
+        buttons.forEach(setupButton)
     </script>
 </body>
 </html>
