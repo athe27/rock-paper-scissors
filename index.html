@@ -7,6 +7,10 @@
     <title>Document</title>
 </head>
 <body>
+    <button data-selection="rock">Rock</button>
+    <button data-selection="paper">Paper</button>
+    <button data-selection="scissors">Scissors</button>
+    <div></div>
     <script>
         const choices = ["rock", "paper", "scissors"]
         const gameKey = {
@@ -36,11 +40,14 @@
             return str.charAt(0).toUpperCase() + str.slice(1)
         }
 
-        for (let i = 0; i < 5; i++) {
-            const playerSelection = prompt("Make a choice: rock, paper, or scissors")
-            const computerSelection = getComputerChoice();
-            console.log(playRound(playerSelection, computerSelection));
-        }
+        const buttons = document.querySelectorAll(`button[data-selection]`)
+        buttons.forEach(button => {
+            button.addEventListener("click", function() {
+                const playerSelection = this.getAttribute('data-selection')
+                const computerSelection = getComputerChoice()
+                console.log(playRound(playerSelection, computerSelection))
+            })
+        })
     </script>
 </body>
 </html>
